@@ -20,7 +20,7 @@ public class ChaveService {
         this.chaveRepository = chaveRepository;
     }
     
-    //C - CREAT
+    //C - CREATE
     public ResponseEntity<ResponseDTO<ChaveDTO>> cadastrar(ChaveDTO chaveDTO) {
         Chave chave =ChaveDTO.dtoToChave(chaveDTO);
         this.chaveRepository.save(chave);

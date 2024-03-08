@@ -1,6 +1,25 @@
 package br.edu.ufsj.claviculario.Models;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.*;
 
-public record User(int id, String matricula, String name, String phone
-        , List<Chave> salasQueGerencia, List<Chave> salasQuePodeAcessar) {}
+
+@Entity
+@Table(name = "tb_user")
+@Getter @Setter @Builder
+@NoArgsConstructor(force = true) @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class User {
+    
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    
+    private String matricula;
+    private String name;
+    private String phone;
+    
+    //private final List<Chave> salasQueGerencia;
+    //private final List<Chave> salasQuePodeAcessar;
+    
+}

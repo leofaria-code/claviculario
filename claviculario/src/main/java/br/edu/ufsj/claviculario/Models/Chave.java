@@ -2,16 +2,13 @@ package br.edu.ufsj.claviculario.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import lombok.*;
 
 
 @Entity
-//@Table(name = "tb_chave")
+@Table(name = "tb_chave")
 @Getter @Setter @Builder
 @NoArgsConstructor(force = true) @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -22,6 +22,5 @@ public final class ChaveDTO {
                 .complemento(chaveDTO.getComplemento())
                 .nickname(chaveDTO.getNickname())
                 .build();
-        
     }
 }
