@@ -1,14 +1,14 @@
 package br.edu.ufsj.claviculario.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
-
 import lombok.*;
+import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Collection;
 
 @Entity
-@Table(name = "tb_chave")
+@Table (name = "chaves")
 @Getter @Setter @Builder
 @NoArgsConstructor(force = true) @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -26,6 +26,9 @@ public class Chave {
         
     private String nickname;
     
-    //private List<User> usersResponsaveis;
-    //private List<User> usersComAcesso;
+    @Setter
+    @Getter
+    @ManyToMany(mappedBy = "keys")
+    private Collection<Usuario> usuarios;
+    
 }

@@ -1,9 +1,33 @@
+version: '3'
+
 services:
-  postgres:
-    image: 'postgres:latest'
+  db:
+    image: postgres:16
+    restart: always
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2343
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
-      - '5432'
+      - "5432:5432"
+
+volumes:
+  db-data:
+
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: always
+#    container_name: app
+#    depends_on:
+#      - postgres
+#    ports:
+#      - '8082:8080'
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=2343
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
