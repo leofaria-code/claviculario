@@ -1,26 +1,17 @@
 package br.edu.ufsj.claviculario.DTOs;
 
 import br.edu.ufsj.claviculario.Models.Chave;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
 
-@Getter @Setter
-@NoArgsConstructor(force = true) @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class ChaveDTO {
-    private char bloco;
-    private int andar;
-    private int sala;
-    private char complemento;
-    private String nickname;
+public record ChaveDTO(char bloco, int andar, int sala, char complemento, String nickname) {
     
     public static Chave dtoToChave(ChaveDTO chaveDTO) {
         return Chave.builder()
-                .bloco(chaveDTO.getBloco())
-                .andar(chaveDTO.getAndar())
-                .sala(chaveDTO.getSala())
-                .complemento(chaveDTO.getComplemento())
-                .nickname(chaveDTO.getNickname())
+                .bloco(chaveDTO.bloco())
+                .andar(chaveDTO.andar())
+                .sala(chaveDTO.sala())
+                .complemento(chaveDTO.complemento())
+                .nickname(chaveDTO.nickname())
                 .build();
     }
+
 }

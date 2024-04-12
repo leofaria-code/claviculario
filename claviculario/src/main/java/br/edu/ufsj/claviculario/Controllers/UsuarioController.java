@@ -18,7 +18,7 @@ public class UsuarioController {
     }
     
     @PostMapping("/")   //C - CREATE
-    public ResponseEntity<ResponseDTO<UsuarioDTO>> cadastrar(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<ResponseDTO<Usuario>> cadastrar(@RequestBody UsuarioDTO usuarioDTO) {
         return this.usuarioService.cadastrar(usuarioDTO);
     }
     
@@ -35,5 +35,10 @@ public class UsuarioController {
     @GetMapping("/usuarios")   //R - READ ALL
     public ResponseEntity<ResponseDTO<Usuario>> listarTodosUsuarios () {
         return this.usuarioService.listarTodos ();
+    }
+    
+    @PutMapping("/update")   //U - UPDATE
+    public ResponseEntity<ResponseDTO<Usuario>> atualizar(@RequestBody UsuarioDTO usuarioDTO) {
+        return this.usuarioService.atualizar(usuarioDTO);
     }
 }

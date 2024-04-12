@@ -26,8 +26,7 @@ public class Chave {
         
     private String nickname;
     
-    @Setter
-    @Getter
+    @Setter @Getter
     @ManyToMany(mappedBy = "keys")
     private Collection<Usuario> usuarios;
     

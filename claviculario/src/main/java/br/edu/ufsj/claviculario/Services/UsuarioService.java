@@ -23,15 +23,14 @@ public class UsuarioService {
     }
     
     //C - CREATE
-    public ResponseEntity<ResponseDTO<UsuarioDTO>> cadastrar(UsuarioDTO usuarioDTO) {
-        Usuario usuario = UsuarioDTO.dtoToUser(usuarioDTO);
+    public ResponseEntity<ResponseDTO<Usuario>> cadastrar(UsuarioDTO usuarioDTO) {
+        Usuario usuario = UsuarioDTO.dtoToUsuario(usuarioDTO);
         this.usuarioRepository.save(usuario);
         
         return ResponseEntity.ok()
-                .body(ResponseDTO
-                        .<UsuarioDTO>builder()
+                .body(ResponseDTO.<Usuario>builder()
                         .message(MSG_SUCESSO)
-                        .detail(usuarioDTO)
+                        .detail(usuario)
                         .build());
     }
     
@@ -61,6 +60,19 @@ public class UsuarioService {
         return ResponseEntity.ok()
                 .body(ResponseDTO.<Usuario>builder()
                         .message(MSG_SUCESSO)
+                        .build());
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> atualizar(UsuarioDTO usuarioDTO) {
+        Usuario usuarioSelecionado = this.usuarioRepository.findUsuarioByMatricula(usuarioDTO.matricula());
+        usuarioSelecionado.setNome(usuarioDTO.nome());
+        usuarioSelecionado.setPhone(usuarioDTO.phone());
+        this.usuarioRepository.save(usuarioSelecionado);
+        
+        return ResponseEntity.ok()
+                .body(ResponseDTO.<Usuario>builder()
+                        .message(MSG_SUCESSO)
+                        .detail(usuarioSelecionado)
                         .build());
     }
 }
