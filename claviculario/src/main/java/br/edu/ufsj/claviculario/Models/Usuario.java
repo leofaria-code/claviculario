@@ -1,23 +1,28 @@
 package br.edu.ufsj.claviculario.Models;
 
+import br.edu.ufsj.claviculario.Enums.UsuariosTipos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import java.sql.Timestamp;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.format.annotation.NumberFormat;
-
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "usuarios")
 @Getter @Setter @Builder
-@NoArgsConstructor(force = true) @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuario {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(columnDefinition = "VARCHAR(50)")
+    @Enumerated(EnumType.STRING)
+    private UsuariosTipos tipo;
     
     @Column(unique = true, nullable = false) @NonNull
     @NumberFormat(pattern = "2024")
@@ -29,6 +34,10 @@ public class Usuario {
     @Column(unique = true, nullable = false) @NonNull
     @NumberFormat(pattern = "9876")
     private String phone;
+    
+    private Timestamp dataCadastro;
+
+    private Timestamp dataAtualizacao;
     
     @ManyToMany
     @JoinTable(

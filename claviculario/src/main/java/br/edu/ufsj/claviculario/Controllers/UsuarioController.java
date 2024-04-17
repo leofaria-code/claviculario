@@ -7,6 +7,8 @@ import br.edu.ufsj.claviculario.util.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController //CRUD
 @RequestMapping("/usuario")
 public class UsuarioController {
@@ -22,9 +24,9 @@ public class UsuarioController {
         return this.usuarioService.cadastrar(usuarioDTO);
     }
     
-    @GetMapping("/nome/{name}")   //R - READ NAME
-    public ResponseEntity<ResponseDTO<Usuario>> listarUserPeloNome (@PathVariable("name") String name) {
-        return this.usuarioService.listarPeloNome (name);
+    @GetMapping("/nome/{nome}")   //R - READ NAME
+    public ResponseEntity<ResponseDTO<Usuario>> listarUserPeloNome (@PathVariable("nome") String nome) {
+        return this.usuarioService.listarPeloNome (nome);
     }
     
     @GetMapping("/matricula/{matricula}")   //R - READ MATRICULA
@@ -33,7 +35,7 @@ public class UsuarioController {
     }
     
     @GetMapping("/usuarios")   //R - READ ALL
-    public ResponseEntity<ResponseDTO<Usuario>> listarTodosUsuarios () {
+    public ResponseEntity<ResponseDTO<List<Usuario>>> listarTodosUsuarios () {
         return this.usuarioService.listarTodos ();
     }
     
