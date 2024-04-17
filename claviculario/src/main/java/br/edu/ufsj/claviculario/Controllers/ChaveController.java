@@ -3,9 +3,11 @@ package br.edu.ufsj.claviculario.Controllers;
 import br.edu.ufsj.claviculario.DTOs.ChaveDTO;
 import br.edu.ufsj.claviculario.Models.Chave;
 import br.edu.ufsj.claviculario.Services.ChaveService;
-import br.edu.ufsj.claviculario.util.ResponseDTO;
+import br.edu.ufsj.claviculario.Utils.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController //CRUD
 @RequestMapping("/chave")
@@ -22,13 +24,16 @@ public class ChaveController {
         return this.chaveService.cadastrar(chaveDTO);
     }
     
-    @GetMapping("/{name}")   //R - READ NAME
-    public ResponseEntity<ResponseDTO<Chave>> listarChavePeloNome (@PathVariable("name") String name) {
+    @GetMapping("/nome/{nome}")   //R - READ NAME
+    public ResponseEntity<ResponseDTO<Chave>> listarChavePeloNome (@PathVariable("nome") String name) {
         return this.chaveService.listarPeloNome (name);
     }
     
-    @GetMapping("/{nickname}")   //R - READ NICKNAME
-    public ResponseEntity<ResponseDTO<Chave>> listarChavePeloApelido (@PathVariable("nickname") String nickname) {
-        return this.chaveService.listarPeloApelido (nickname);
+    @GetMapping("/chaves")   //R - READ ALL
+    public ResponseEntity<ResponseDTO<List<Chave>>> listarTodasChaves () {
+        return this.chaveService.listarTodas ();
     }
+    
+    
+    
 }

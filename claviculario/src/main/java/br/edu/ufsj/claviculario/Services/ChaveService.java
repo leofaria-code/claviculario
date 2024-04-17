@@ -3,10 +3,12 @@ package br.edu.ufsj.claviculario.Services;
 import br.edu.ufsj.claviculario.DTOs.ChaveDTO;
 import br.edu.ufsj.claviculario.Models.Chave;
 import br.edu.ufsj.claviculario.Repositories.ChaveRepository;
-import br.edu.ufsj.claviculario.util.ResponseDTO;
+import br.edu.ufsj.claviculario.Utils.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -22,7 +24,8 @@ public class ChaveService {
     
     //C - CREATE
     public ResponseEntity<ResponseDTO<ChaveDTO>> cadastrar(ChaveDTO chaveDTO) {
-        Chave chave =ChaveDTO.dtoToChave(chaveDTO);
+        Chave chave = ChaveDTO.dtoToChave(chaveDTO);
+        chave.setDisponivel(true);
         this.chaveRepository.save(chave);
         
         return ResponseEntity.ok()
@@ -43,13 +46,15 @@ public class ChaveService {
                         .build());
     }
     
-    public ResponseEntity<ResponseDTO<Chave>> listarPeloApelido (String nickname) {
-        Chave chave = this.chaveRepository.findChaveByNickname(nickname);
+    //R - Read All
+    public ResponseEntity<ResponseDTO<List<Chave>>> listarTodas () {
+        List<Chave> chaves = this.chaveRepository.findAll();
         return ResponseEntity.ok()
-                .body(ResponseDTO.<Chave>builder()
+                .body(ResponseDTO.<List<Chave>>builder()
                         .message(MSG_SUCESSO)
-                        .detail(chave)
+                        .detail(chaves)
                         .build());
     }
+    
     
 }

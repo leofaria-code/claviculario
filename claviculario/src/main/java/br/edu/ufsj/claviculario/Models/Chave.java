@@ -1,5 +1,6 @@
 package br.edu.ufsj.claviculario.Models;
 
+import br.edu.ufsj.claviculario.Enums.Blocos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,17 +18,24 @@ public class Chave {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private char bloco;
-    private int andar;
+    @Column(columnDefinition = "VARCHAR(1)")
+    @Enumerated(EnumType.STRING)
+    private Blocos bloco;
+    
     private int sala;
+    
     private char complemento;
     
-    private String name = String.valueOf(getBloco()) + getSala() + getComplemento();
-        
-    private String nickname;
+    private String name;
+    
+    private boolean disponivel;
     
     @Setter @Getter
-    @ManyToMany(mappedBy = "keys")
-    private Collection<Usuario> usuarios;
+    @ManyToMany(mappedBy = "chavesAutorizadas")
+    private Collection<Usuario> usuariosAutorizados;
+    
+    @Setter @Getter
+    @ManyToMany(mappedBy = "chavesGerenciadas")
+    private Collection<Usuario> usuariosGestores;
     
 }

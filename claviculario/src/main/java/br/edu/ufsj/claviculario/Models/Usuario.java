@@ -35,16 +35,28 @@ public class Usuario {
     @NumberFormat(pattern = "9876")
     private String phone;
     
+    private String email;
+    
     private Timestamp dataCadastro;
 
     private Timestamp dataAtualizacao;
     
+    private boolean ativo;
+    
     @ManyToMany
     @JoinTable(
-            name = "usuario_chaves",
+            name = "usuario_chaves_autorizadas",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "chave_id")
     )
-    private Set<Chave> keys = new HashSet<>();
+    private Set<Chave> chavesAutorizadas = new HashSet<>();
+    
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_chaves_gerenciadas",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "chave_id")
+    )
+    private Set<Chave> chavesGerenciadas = new HashSet<>();
     
 }

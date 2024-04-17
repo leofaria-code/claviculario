@@ -4,7 +4,7 @@ import br.edu.ufsj.claviculario.Enums.UsuariosTipos;
 import br.edu.ufsj.claviculario.Models.Usuario;
 
 
-public record UsuarioDTO(UsuariosTipos tipo, String matricula, String nome, String phone) {
+public record UsuarioDTO(UsuariosTipos tipo, String matricula, String nome, String phone, String email) {
     
     public static Usuario dtoToUsuario(UsuarioDTO usuarioDTO) {
         return Usuario.builder()
@@ -12,6 +12,7 @@ public record UsuarioDTO(UsuariosTipos tipo, String matricula, String nome, Stri
                 .matricula(usuarioDTO.matricula())
                 .nome(usuarioDTO.nome())
                 .phone(usuarioDTO.phone())
+                .email(usuarioDTO.email())
                 .build();
     }
 }

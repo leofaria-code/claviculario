@@ -1,4 +1,4 @@
-package br.edu.ufsj.claviculario.util;
+package br.edu.ufsj.claviculario.Utils;
 
 import java.sql.Timestamp;
 import java.time.Instant;

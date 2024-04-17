@@ -3,7 +3,7 @@ package br.edu.ufsj.claviculario.Controllers;
 import br.edu.ufsj.claviculario.DTOs.UsuarioDTO;
 import br.edu.ufsj.claviculario.Models.Usuario;
 import br.edu.ufsj.claviculario.Services.UsuarioService;
-import br.edu.ufsj.claviculario.util.ResponseDTO;
+import br.edu.ufsj.claviculario.Utils.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +42,10 @@ public class UsuarioController {
     @PutMapping("/update")   //U - UPDATE
     public ResponseEntity<ResponseDTO<Usuario>> atualizar(@RequestBody UsuarioDTO usuarioDTO) {
         return this.usuarioService.atualizar(usuarioDTO);
+    }
+    
+    @PutMapping("/delete")   //D - DELETE
+    public ResponseEntity<ResponseDTO<Usuario>> deletar(@RequestBody UsuarioDTO usuarioDTO) {
+        return this.usuarioService.deletar(usuarioDTO.matricula());
     }
 }

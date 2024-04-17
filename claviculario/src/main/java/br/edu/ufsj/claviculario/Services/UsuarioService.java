@@ -3,8 +3,8 @@ package br.edu.ufsj.claviculario.Services;
 import br.edu.ufsj.claviculario.DTOs.UsuarioDTO;
 import br.edu.ufsj.claviculario.Models.Usuario;
 import br.edu.ufsj.claviculario.Repositories.UsuarioRepository;
-import br.edu.ufsj.claviculario.util.ResponseDTO;
-import br.edu.ufsj.claviculario.util.Timestamps;
+import br.edu.ufsj.claviculario.Utils.ResponseDTO;
+import br.edu.ufsj.claviculario.Utils.Timestamps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,9 @@ public class UsuarioService {
     //C - CREATE
     public ResponseEntity<ResponseDTO<Usuario>> cadastrar(UsuarioDTO usuarioDTO) {
         Usuario usuario = UsuarioDTO.dtoToUsuario(usuarioDTO);
-        Timestamp cadastro = new Timestamps().obterMomentoAtual();
+        Timestamp cadastro = Timestamps.obterMomentoAtual();
         usuario.setDataCadastro(cadastro);
+        usuario.setAtivo(true);
         this.usuarioRepository.save(usuario);
         
         return ResponseEntity.ok()
@@ -73,7 +74,9 @@ public class UsuarioService {
         usuarioSelecionado.setTipo(usuarioDTO.tipo());
         usuarioSelecionado.setNome(usuarioDTO.nome());
         usuarioSelecionado.setPhone(usuarioDTO.phone());
-        usuarioSelecionado.setDataAtualizacao(new Timestamps().obterMomentoAtual());
+        usuarioSelecionado.setEmail(usuarioDTO.email());
+        usuarioSelecionado.setDataAtualizacao(Timestamps.obterMomentoAtual());
+        usuarioSelecionado.setAtivo(true);
         this.usuarioRepository.save(usuarioSelecionado);
         
         return ResponseEntity.ok()
@@ -81,5 +84,18 @@ public class UsuarioService {
                         .message(MSG_SUCESSO)
                         .detail(usuarioSelecionado)
                         .build());
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> deletar(String matricula) {
+        Usuario usuarioSelecionado = this.usuarioRepository.findUsuarioByMatricula(matricula);
+        usuarioSelecionado.setAtivo(false);
+        this.usuarioRepository.save(usuarioSelecionado);
+        
+        return ResponseEntity.ok()
+                .body(ResponseDTO.<Usuario>builder()
+                        .message(MSG_SUCESSO)
+                        .detail(usuarioSelecionado)
+                        .build());
+        
     }
 }

@@ -1,4 +1,4 @@
-package br.edu.ufsj.claviculario.util;
+package br.edu.ufsj.claviculario.Utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
