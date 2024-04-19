@@ -24,28 +24,28 @@ public class UsuarioController {
         return this.usuarioService.cadastrar(usuarioDTO);
     }
     
-    @GetMapping("/nome/{nome}")   //R - READ NAME
-    public ResponseEntity<ResponseDTO<Usuario>> listarUserPeloNome (@PathVariable("nome") String nome) {
+    @GetMapping("/{nome}")   //R - READ NAME
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPeloNome(@PathVariable("nome") String nome) {
         return this.usuarioService.listarPeloNome (nome);
     }
     
     @GetMapping("/matricula/{matricula}")   //R - READ MATRICULA
-    public ResponseEntity<ResponseDTO<Usuario>> listarUserPelaMatricula (@PathVariable("matricula") String matricula) {
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPelaMatricula(@PathVariable("matricula") String matricula) {
         return this.usuarioService.listarPelaMatricula (matricula);
     }
     
-    @GetMapping("/usuarios")   //R - READ ALL
+    @GetMapping("/")   //R - READ ALL
     public ResponseEntity<ResponseDTO<List<Usuario>>> listarTodosUsuarios () {
         return this.usuarioService.listarTodos ();
     }
     
-    @PutMapping("/update")   //U - UPDATE
+    @PutMapping("/")   //U - UPDATE
     public ResponseEntity<ResponseDTO<Usuario>> atualizar(@RequestBody UsuarioDTO usuarioDTO) {
         return this.usuarioService.atualizar(usuarioDTO);
     }
     
-    @PutMapping("/delete")   //D - DELETE
-    public ResponseEntity<ResponseDTO<Usuario>> deletar(@RequestBody UsuarioDTO usuarioDTO) {
-        return this.usuarioService.deletar(usuarioDTO.matricula());
+    @PutMapping("/{matricula}")   //D - DELETE
+    public ResponseEntity<ResponseDTO<Usuario>> deletar(@PathVariable("matricula") String matricula) {
+        return this.usuarioService.deletar(matricula);
     }
 }

@@ -24,16 +24,14 @@ public class ChaveController {
         return this.chaveService.cadastrar(chaveDTO);
     }
     
-    @GetMapping("/nome/{nome}")   //R - READ NAME
+    @GetMapping("/{nome}")   //R - READ NAME
     public ResponseEntity<ResponseDTO<Chave>> listarChavePeloNome (@PathVariable("nome") String name) {
         return this.chaveService.listarPeloNome (name);
     }
     
-    @GetMapping("/chaves")   //R - READ ALL
+    @GetMapping("/")   //R - READ ALL
     public ResponseEntity<ResponseDTO<List<Chave>>> listarTodasChaves () {
         return this.chaveService.listarTodas ();
     }
-    
-    
     
 }
