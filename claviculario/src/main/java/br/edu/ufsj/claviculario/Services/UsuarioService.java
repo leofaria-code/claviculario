@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,6 +38,20 @@ public class UsuarioService {
                         .message(MSG_SUCESSO)
                         .detail(usuario)
                         .build());
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> buscarPorId(Long id) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            return ResponseEntity.ok(
+                    ResponseDTO.<Usuario>builder()
+                            .message(MSG_SUCESSO)
+                            .detail(usuario)
+                            .build());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     //R - Read Nome

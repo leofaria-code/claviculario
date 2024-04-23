@@ -1,12 +1,12 @@
 package br.edu.ufsj.claviculario.Models;
 
+import br.edu.ufsj.claviculario.Enums.UsuariosPapeis;
 import br.edu.ufsj.claviculario.Enums.UsuariosTipos;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.format.annotation.NumberFormat;
+
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +14,6 @@ import java.util.Set;
 @Table(name = "usuarios")
 @Getter @Setter @Builder
 @NoArgsConstructor @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuario {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,23 +21,32 @@ public class Usuario {
     
     @Column(columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
+    private UsuariosPapeis papel;
+    
+    @Column(columnDefinition = "VARCHAR(50)")
+    @Enumerated(EnumType.STRING)
     private UsuariosTipos tipo;
     
-    @Column(unique = true, nullable = false) @NonNull
-    @NumberFormat(pattern = "2024")
+    @Column(unique = true, nullable = false)
     private String matricula;
     
-    @Column(unique = true, nullable = false) @NonNull
+    @Column(unique = true, nullable = false, updatable = false, columnDefinition = "VARCHAR(11)")
+    private String cpf;
+    
+    @Column(unique = true, nullable = false)
     private String nome;
     
-    @Column(unique = true, nullable = false) @NonNull
-    @NumberFormat(pattern = "9876")
+    @Column(unique = true, nullable = false)
     private String phone;
     
+    @Column(unique = true, nullable = false)
     private String email;
     
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dataCadastro;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dataAtualizacao;
     
     private boolean ativo;
@@ -49,7 +57,7 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "chave_id")
     )
-    private Set<Chave> chavesAutorizadas = new HashSet<>();
+    private Set<Chave> chavesQueTemAutorizacaoDeRetirar = new HashSet<>();
     
     @ManyToMany
     @JoinTable(
@@ -57,6 +65,9 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "chave_id")
     )
-    private Set<Chave> chavesGerenciadas = new HashSet<>();
+    private Set<Chave> chavesQueGerencia = new HashSet<>();
+    
+    @OneToMany(mappedBy = "usuarioDePosse")
+    private Set<Chave> chavesQuePorta = new HashSet<>();
     
 }

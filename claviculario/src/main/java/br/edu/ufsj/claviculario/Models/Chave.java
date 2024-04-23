@@ -1,7 +1,6 @@
 package br.edu.ufsj.claviculario.Models;
 
 import br.edu.ufsj.claviculario.Enums.Blocos;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
@@ -11,8 +10,7 @@ import java.util.Collection;
 @Entity
 @Table (name = "chaves")
 @Getter @Setter @Builder
-@NoArgsConstructor(force = true) @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor @AllArgsConstructor
 public class Chave {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,16 +24,20 @@ public class Chave {
     
     private char complemento;
     
-    private String name;
+    private String nome;
     
     private boolean disponivel;
     
     @Setter @Getter
-    @ManyToMany(mappedBy = "chavesAutorizadas")
+    @ManyToMany(mappedBy = "chavesQueTemAutorizacaoDeRetirar")
     private Collection<Usuario> usuariosAutorizados;
     
     @Setter @Getter
-    @ManyToMany(mappedBy = "chavesGerenciadas")
+    @ManyToMany(mappedBy = "chavesQueGerencia")
     private Collection<Usuario> usuariosGestores;
+    
+    @Setter @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioDePosse;
     
 }

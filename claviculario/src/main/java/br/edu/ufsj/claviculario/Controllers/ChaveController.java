@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @RestController //CRUD
 @RequestMapping("/chave")
@@ -25,7 +27,7 @@ public class ChaveController {
     }
     
     @GetMapping("/{nome}")   //R - READ NAME
-    public ResponseEntity<ResponseDTO<Chave>> listarChavePeloNome (@PathVariable("nome") String name) {
+    public ResponseEntity<ResponseDTO<Optional<Chave>>> listarChavePeloNome (@PathVariable("nome") String name) {
         return this.chaveService.listarPeloNome (name);
     }
     
@@ -34,4 +36,9 @@ public class ChaveController {
         return this.chaveService.listarTodas ();
     }
     
+//    @PatchMapping("/")  //U - UPDATE
+//    public ResponseEntity<ResponseDTO<Chave>> atualizarChave(@RequestParam Chave chave) {
+//        return this.chaveService.atualizar (chave);
+//    }
+//
 }

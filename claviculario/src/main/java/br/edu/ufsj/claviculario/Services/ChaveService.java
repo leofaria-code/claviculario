@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -17,6 +18,7 @@ public class ChaveService {
     private static final String MSG_SUCESSO = "Sucesso";
     
     private final ChaveRepository chaveRepository;
+
     
     public ChaveService(ChaveRepository chaveRepository) {
         this.chaveRepository = chaveRepository;
@@ -27,7 +29,6 @@ public class ChaveService {
         Chave chave = ChaveDTO.dtoToChave(chaveDTO);
         chave.setDisponivel(true);
         this.chaveRepository.save(chave);
-        
         return ResponseEntity.ok()
                 .body(ResponseDTO
                         .<ChaveDTO>builder()
@@ -36,17 +37,27 @@ public class ChaveService {
                         .build());
     }
     
-    //R - Read
-    public ResponseEntity<ResponseDTO<Chave>> listarPeloNome (String name) {
-        Chave chave = this.chaveRepository.findChaveByName(name);
+    //R - Read by id
+    public ResponseEntity<ResponseDTO<Optional<Chave>>> buscarPorID (Long id) {
+        Optional<Chave> chave = this.chaveRepository.findById(id);
         return ResponseEntity.ok()
-                .body(ResponseDTO.<Chave>builder()
+                .body(ResponseDTO.<Optional<Chave>>builder()
                         .message(MSG_SUCESSO)
                         .detail(chave)
                         .build());
     }
     
+    //R - Read by name
+    public ResponseEntity<ResponseDTO<Optional<Chave>>> listarPeloNome (String nome) {
+        Optional<Chave> chave = Optional.ofNullable(this.chaveRepository.findChaveByNome(nome));
+        return ResponseEntity.ok()
+                .body(ResponseDTO.<Optional<Chave>>builder()
+                        .message(MSG_SUCESSO)
+                        .detail(chave)
+                        .build());
+    }
     //R - Read All
+    
     public ResponseEntity<ResponseDTO<List<Chave>>> listarTodas () {
         List<Chave> chaves = this.chaveRepository.findAll();
         return ResponseEntity.ok()
@@ -57,4 +68,8 @@ public class ChaveService {
     }
     
     
+//    public ResponseEntity<ResponseDTO<Chave>> atualizar(Chave chave) {
+//        this.chaveRepository.save(chave);
+//        return null;
+//    }
 }
