@@ -2,6 +2,7 @@ package br.edu.ufsj.claviculario.Models;
 
 import br.edu.ufsj.claviculario.Enums.UsuariosPapeis;
 import br.edu.ufsj.claviculario.Enums.UsuariosTipos;
+import br.edu.ufsj.claviculario.Utils.Timestamps;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -10,6 +11,7 @@ import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +38,7 @@ public class Usuario {
     private String matricula;
     
     @Column(unique = true, nullable = false, updatable = false, columnDefinition = "VARCHAR(11)")
+    @Setter(AccessLevel.NONE)
     private String cpf;
     
     @Column(unique = true, nullable = false)
@@ -49,12 +52,14 @@ public class Usuario {
     
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dataCadastro;
+    @Builder.Default @Setter(AccessLevel.NONE)
+    private Timestamp dataCadastro = Timestamps.obterMomentoAtual();
 
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dataAtualizacao;
     
-    private boolean ativo;
+    @Builder.Default
+    private boolean ativo = true;
     
     @ManyToMany
     @JsonManagedReference
@@ -63,6 +68,7 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "chave_id")
     )
+    @Builder.Default
     private Set<Chave> chavesQueTemAutorizacaoDeRetirar = new HashSet<>();
     
     @ManyToMany
@@ -72,14 +78,17 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "chave_id")
     )
+    @Builder.Default
     private Set<Chave> chavesQueGerencia = new HashSet<>();
     
     @OneToMany(mappedBy = "usuarioDePosse")
+    @Builder.Default
     @JsonBackReference
     private Set<Chave> chavesQuePorta = new HashSet<>();
     
     @OneToMany(mappedBy = "usuarioQuePegou")
+    @Builder.Default
     @JsonBackReference
-    private List<Emprestimo> emprestimos;
+    private List<Emprestimo> emprestimos = new ArrayList<>();
     
 }

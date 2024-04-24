@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,17 +35,19 @@ public class Chave {
     private String nome;
     
     @Column
-    private boolean disponivel;
+    @Builder.Default
+    private boolean disponivel = true;
     
     @Setter @Getter
     @JsonBackReference
     @ManyToMany(mappedBy = "chavesQueTemAutorizacaoDeRetirar")
-    private Collection<Usuario> usuariosAutorizados;
+    private List<Usuario> usuariosAutorizados;
     
     @Setter @Getter
     @JsonBackReference
     @ManyToMany(mappedBy = "chavesQueGerencia")
-    private Collection<Usuario> usuariosGestores;
+    @Builder.Default
+    private List<Usuario> usuariosGestores = new ArrayList<>();
     
     @Setter @Getter
     @JsonManagedReference

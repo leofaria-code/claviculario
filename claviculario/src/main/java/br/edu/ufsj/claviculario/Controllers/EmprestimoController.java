@@ -2,7 +2,6 @@ package br.edu.ufsj.claviculario.Controllers;
 
 import br.edu.ufsj.claviculario.DTOs.EmprestimoDTO;
 import br.edu.ufsj.claviculario.Models.Emprestimo;
-import br.edu.ufsj.claviculario.Models.Usuario;
 import br.edu.ufsj.claviculario.Services.EmprestimoService;
 import br.edu.ufsj.claviculario.Utils.ResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ public class EmprestimoController {
     }
     
     @PutMapping("/")
-    public ResponseEntity<ResponseDTO<Emprestimo>> finalizarEmprestimo(@RequestParam Long id, Usuario usuarioQueRecebeu) {
-        return this.emprestimoService.devolver(id, usuarioQueRecebeu);
+    public ResponseEntity<ResponseDTO<Emprestimo>> finalizarEmprestimo(@RequestParam Long id, Long usuarioQueRecebeuId) {
+        return this.emprestimoService.devolver(id, usuarioQueRecebeuId);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController //CRUD
+@RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
     
@@ -19,33 +19,43 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
     
-    @PostMapping("/")   //C - CREATE
+    @PostMapping("/")
     public ResponseEntity<ResponseDTO<Usuario>> cadastrar(@RequestBody UsuarioDTO usuarioDTO) {
         return this.usuarioService.cadastrar(usuarioDTO);
     }
     
-    @GetMapping("/{nome}")   //R - READ NAME
-    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPeloNome(@PathVariable("nome") String nome) {
-        return this.usuarioService.listarPeloNome (nome);
+    @GetMapping("/nome")
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPeloNome(@RequestParam String nome) {
+        return this.usuarioService.buscarPeloNome(nome);
     }
     
-    @GetMapping("/matricula/{matricula}")   //R - READ MATRICULA
-    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPelaMatricula(@PathVariable("matricula") String matricula) {
-        return this.usuarioService.listarPelaMatricula (matricula);
+    @GetMapping("/matricula")
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPelaMatricula(@RequestParam String matricula) {
+        return this.usuarioService.buscarPelaMatricula(matricula);
     }
     
-    @GetMapping("/")   //R - READ ALL
+    @GetMapping("/id")
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPeloId(@RequestParam Long id) {
+        return this.usuarioService.buscarPorId (id);
+    }
+    
+    @GetMapping("/cpf")
+    public ResponseEntity<ResponseDTO<Usuario>> listarUsuarioPeloCpf(@RequestParam String cpf) {
+        return this.usuarioService.buscarPorCpf (cpf);
+    }
+    
+    @GetMapping("/")
     public ResponseEntity<ResponseDTO<List<Usuario>>> listarTodosUsuarios () {
         return this.usuarioService.listarTodos ();
     }
     
-    @PutMapping("/")   //U - UPDATE
-    public ResponseEntity<ResponseDTO<Usuario>> atualizar(@RequestBody UsuarioDTO usuarioDTO) {
-        return this.usuarioService.atualizar(usuarioDTO);
+    @PutMapping("/")
+    public ResponseEntity<ResponseDTO<Usuario>> atualizar(@RequestParam Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        return this.usuarioService.atualizar(id, usuarioDTO);
     }
     
-    @PutMapping("/{matricula}")   //D - DELETE
-    public ResponseEntity<ResponseDTO<Usuario>> deletar(@PathVariable("matricula") String matricula) {
-        return this.usuarioService.deletar(matricula);
+    @PutMapping("/delete")
+    public ResponseEntity<ResponseDTO<Usuario>> deletar(@RequestParam("id") Long id) {
+        return this.usuarioService.deletar(id);
     }
 }

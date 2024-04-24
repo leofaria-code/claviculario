@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,37 +24,42 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
     
-    //C - CREATE
     public ResponseEntity<ResponseDTO<Usuario>> cadastrar(UsuarioDTO usuarioDTO) {
         Usuario usuario = UsuarioDTO.dtoToUsuario(usuarioDTO);
-        Timestamp cadastro = Timestamps.obterMomentoAtual();
-        usuario.setDataCadastro(cadastro);
-        usuario.setAtivo(true);
         this.usuarioRepository.save(usuario);
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Usuario>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(usuario)
-                        .build());
+        return getResponse(usuario);
     }
     
     public ResponseEntity<ResponseDTO<Usuario>> buscarPorId(Long id) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        return getResponseEntity(usuarioOptional);
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> buscarPorCpf(String cpf) {
+        Optional<Usuario> usuarioOptional = Optional.ofNullable(usuarioRepository.findUsuarioByCpf(cpf));
+        return getResponseEntity(usuarioOptional);
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> buscarPelaMatricula(String matricula) {
+        Optional<Usuario> usuarioOptional = Optional.ofNullable(usuarioRepository.findUsuarioByMatricula(matricula));
+        return getResponseEntity(usuarioOptional);
+    }
+
+    public ResponseEntity<ResponseDTO<Usuario>> buscarPeloNome(String nome) {
+        Optional<Usuario> usuarioOptional = Optional.ofNullable(usuarioRepository.findUsuarioByNome(nome));
+        return getResponseEntity(usuarioOptional);
+    }
+    
+    private static ResponseEntity<ResponseDTO<Usuario>> getResponseEntity(Optional<Usuario> usuarioOptional) {
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            return ResponseEntity.ok(
-                    ResponseDTO.<Usuario>builder()
-                            .message(MSG_SUCESSO)
-                            .detail(usuario)
-                            .build());
+            return getResponse(usuario);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
     
-    //R - Read Nome
-    public ResponseEntity<ResponseDTO<Usuario>> listarPeloNome (String nome) {
-        Usuario usuario = this.usuarioRepository.findUsuarioByNome(nome);
+    private static ResponseEntity<ResponseDTO<Usuario>> getResponse(Usuario usuario) {
         return ResponseEntity.ok()
                 .body(ResponseDTO.<Usuario>builder()
                         .message(MSG_SUCESSO)
@@ -63,17 +67,6 @@ public class UsuarioService {
                         .build());
     }
     
-    //R - Read Matricula
-    public ResponseEntity<ResponseDTO<Usuario>> listarPelaMatricula (String matricula) {
-        Usuario usuario = this.usuarioRepository.findUsuarioByMatricula(matricula);
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Usuario>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(usuario)
-                        .build());
-    }
-    
-    //R - Read All
     public ResponseEntity<ResponseDTO<List<Usuario>>> listarTodos() {
         List<Usuario> usuarios = this.usuarioRepository.findAll();
         return ResponseEntity.ok()
@@ -83,33 +76,36 @@ public class UsuarioService {
                         .build());
     }
     
-    public ResponseEntity<ResponseDTO<Usuario>> atualizar(UsuarioDTO usuarioDTO) {
-        Usuario usuarioSelecionado = this.usuarioRepository.findUsuarioByMatricula(usuarioDTO.matricula());
-        usuarioSelecionado.setTipo(usuarioDTO.tipo());
-        usuarioSelecionado.setNome(usuarioDTO.nome());
-        usuarioSelecionado.setPhone(usuarioDTO.phone());
-        usuarioSelecionado.setEmail(usuarioDTO.email());
-        usuarioSelecionado.setDataAtualizacao(Timestamps.obterMomentoAtual());
-        usuarioSelecionado.setAtivo(true);
-        this.usuarioRepository.save(usuarioSelecionado);
-        
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Usuario>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(usuarioSelecionado)
-                        .build());
+    public ResponseEntity<ResponseDTO<Usuario>> deletar(Long id) {
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findById(id);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuarioDesativado = usuarioOptional.get();
+            usuarioDesativado.setAtivo(false);
+            usuarioDesativado.setDataAtualizacao(Timestamps.obterMomentoAtual());
+            usuarioRepository.save(usuarioDesativado);
+            return getResponse(usuarioDesativado);
+        } else {
+        return ResponseEntity.notFound().build();
     }
     
-    public ResponseEntity<ResponseDTO<Usuario>> deletar(String matricula) {
-        Usuario usuarioSelecionado = this.usuarioRepository.findUsuarioByMatricula(matricula);
-        usuarioSelecionado.setAtivo(false);
-        this.usuarioRepository.save(usuarioSelecionado);
-        
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Usuario>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(usuarioSelecionado)
-                        .build());
-        
+    }
+    
+    public ResponseEntity<ResponseDTO<Usuario>> atualizar(Long id, UsuarioDTO usuarioDTO) {
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findById(id);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuarioAtualizar = usuarioOptional.get();
+            usuarioAtualizar.setTipo(usuarioDTO.tipo());
+            usuarioAtualizar.setPapel(usuarioDTO.papel());
+            usuarioAtualizar.setNome(usuarioDTO.nome());
+            usuarioAtualizar.setMatricula(usuarioDTO.matricula());
+            usuarioAtualizar.setEmail(usuarioDTO.email());
+            usuarioAtualizar.setPhone(usuarioDTO.phone());
+            usuarioAtualizar.setAtivo(true);
+            usuarioAtualizar.setDataAtualizacao(Timestamps.obterMomentoAtual());
+            Usuario usuarioAtualizado = usuarioRepository.save(usuarioAtualizar);
+            return getResponse(usuarioAtualizado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

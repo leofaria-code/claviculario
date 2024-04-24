@@ -2,7 +2,9 @@ package br.edu.ufsj.claviculario.Services;
 
 import br.edu.ufsj.claviculario.DTOs.ChaveDTO;
 import br.edu.ufsj.claviculario.Models.Chave;
+import br.edu.ufsj.claviculario.Models.Usuario;
 import br.edu.ufsj.claviculario.Repositories.ChaveRepository;
+import br.edu.ufsj.claviculario.Repositories.UsuarioRepository;
 import br.edu.ufsj.claviculario.Utils.ResponseDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -19,50 +21,37 @@ import java.util.Set;
 @Service
 public class ChaveService {
     private final ChaveRepository chaveRepository;
+    private final UsuarioRepository usuarioRepository;
     private final Validator validator;
     
+    private static final String MSG_SUCESSO = "Sucesso";
+    
     @Autowired
-    public ChaveService(ChaveRepository chaveRepository, Validator validator) {
+    public ChaveService(ChaveRepository chaveRepository, UsuarioRepository usuarioRepository, Validator validator) {
         this.chaveRepository = chaveRepository;
+        this.usuarioRepository = usuarioRepository;
         this.validator = validator;
     }
     
     public ResponseEntity<ResponseDTO<Chave>> cadastrar(ChaveDTO chaveDTO) {
         Set<ConstraintViolation<ChaveDTO>> violations = validator.validate(chaveDTO);
         if (!violations.isEmpty()) {
-            // Lógica para lidar com violações de validação
             return ResponseEntity.badRequest().build();
         }
         Chave chave = ChaveDTO.dtoToChave(chaveDTO);
-        chave.setDisponivel(true);
         this.chaveRepository.save(chave);
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Chave>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(chave)
-                        .build());
-    }
-
-    
-    public ResponseEntity<ResponseDTO<Optional<Chave>>> buscarPorID (Long id) {
-        Optional<Chave> chave = this.chaveRepository.findById(id);
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Optional<Chave>>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(chave)
-                        .build());
+        return getResponse(chave);
     }
     
-    public ResponseEntity<ResponseDTO<Optional<Chave>>> listarPeloNome (String nome) {
-        Optional<Chave> chave = Optional.ofNullable(this.chaveRepository.findChaveByNome(nome));
-        return ResponseEntity.ok()
-                .body(ResponseDTO.<Optional<Chave>>builder()
-                        .message(MSG_SUCESSO)
-                        .detail(chave)
-                        .build());
+    public ResponseEntity<ResponseDTO<Chave>> buscarPorID (Long id) {
+        Optional<Chave> chaveOptional = this.chaveRepository.findById(id);
+        return getResponseEntity(chaveOptional);
     }
     
-    private static final String MSG_SUCESSO = "Sucesso";
+    public ResponseEntity<ResponseDTO<Chave>> listarPeloNome (String nome) {
+        Optional<Chave> chaveOptional = Optional.ofNullable(this.chaveRepository.findChaveByNome(nome));
+        return getResponseEntity(chaveOptional);
+    }
     
     public ResponseEntity<ResponseDTO<List<Chave>>> listarTodas () {
         List<Chave> chaves = this.chaveRepository.findAll();
@@ -73,4 +62,51 @@ public class ChaveService {
                         .build());
     }
     
+    public ResponseEntity<ResponseDTO<Chave>> deletarChave(Long id) {
+        Optional<Chave> chaveOptional = this.chaveRepository.findById(id);
+        if (chaveOptional.isPresent()) {
+            Chave chave = chaveOptional.get();
+            chave.setDisponivel(false);
+            this.chaveRepository.save(chave);
+            return getResponse(chave);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+    
+    private static ResponseEntity<ResponseDTO<Chave>> getResponseEntity(Optional<Chave> chaveOptional) {
+        if (chaveOptional.isPresent()) {
+            Chave chave = chaveOptional.get();
+            return getResponse(chave);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+    
+    private static ResponseEntity<ResponseDTO<Chave>> getResponse(Chave chave) {
+        return ResponseEntity.ok()
+                .body(ResponseDTO.<Chave>builder()
+                        .message(MSG_SUCESSO)
+                        .detail(chave)
+                        .build());
+    }
+    
+    public ResponseEntity<ResponseDTO<List<Usuario>>> atribuirUsuarioGestor(Long idChave, Long idUsuario) {
+        Optional<Chave> chaveOptional = this.chaveRepository.findById(idChave);
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findById(idUsuario);
+        if (chaveOptional.isPresent() && usuarioOptional.isPresent()) {
+            Chave chave = chaveOptional.get();
+            Usuario usuario = usuarioOptional.get();
+            chave.getUsuariosGestores().add(usuario);
+            usuario.getChavesQueGerencia().add(chave);
+            chaveRepository.save(chave);
+            usuarioRepository.save(usuario);
+            return ResponseEntity.ok()
+                    .body(ResponseDTO.<List<Usuario>>builder()
+                            .message(MSG_SUCESSO)
+                            .detail(chave.getUsuariosGestores())
+                            .build());
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+        
+    }
 }
