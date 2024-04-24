@@ -32,7 +32,6 @@ public class UsuarioService {
         usuario.setDataCadastro(cadastro);
         usuario.setAtivo(true);
         this.usuarioRepository.save(usuario);
-        
         return ResponseEntity.ok()
                 .body(ResponseDTO.<Usuario>builder()
                         .message(MSG_SUCESSO)
